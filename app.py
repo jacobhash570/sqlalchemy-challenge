@@ -30,5 +30,11 @@ def precipitation():
         precipitation_data_list = dict(query_result)
         return jsonify(precipitation_data_list)
 
+@app.route("/api/v1.0/stations")
+def stations():
+  session  = Session(engine)
+  stations_results = session.query(Station.station, Station.name).all()
+  return jsonify(stations_results)
+
 if __name__ == "__main__":
     app.run(debug=True)
