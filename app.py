@@ -46,5 +46,13 @@ def tobs():
         tobs_data_list = list(tobs_data)
         return jsonify(tobs_data_list)
 
+@app.route("/api/v1.0/<start>")
+def start_day(start):
+        start_day = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+                filter(Measurement.date >= start).\
+                group_by(Measurement.date).all()
+        start_day_list = list(start_day)
+        return jsonify(start_day_list)
+        
 if __name__ == "__main__":
     app.run(debug=True)
