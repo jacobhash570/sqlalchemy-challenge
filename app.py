@@ -19,7 +19,14 @@ session = Session(engine)
 app = Flask(__name__)
 @app.route("/")
 def Home():
-    return ("Welcome to the API!")
+        return (
+        f"Welcome To The API!<br/>"
+        f"Available Routes:<br/>"
+        f"/api/v1.0/precipitation<br/>"
+        f"/api/v1.0/stations<br/>"
+        f"/api/v1.0/tobs<br/>"
+        f"/api/v1.0/<start><br/>"
+        f"/api/v1.0/<start>/<end>")
 
 @app.route("/api/v1.0//precipitation")
 def precipitation():
@@ -53,6 +60,15 @@ def start_day(start):
                 group_by(Measurement.date).all()
         start_day_list = list(start_day)
         return jsonify(start_day_list)
-        
+
+@app.route("/api/v1.0/<start>/<end>")
+def start_end_day(start, end):
+        start_end_day = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+                filter(Measurement.date >= start).\
+                filter(Measurement.date <= end).\
+                group_by(Measurement.date).all()
+        start_end_day_list = list(start_end_day)
+        return jsonify(start_end_day_list)
+
 if __name__ == "__main__":
     app.run(debug=True)
